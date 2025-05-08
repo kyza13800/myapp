@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Простой счетчик</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: var(--tg-theme-bg-color); /* Используем переменные Telegram Theme */
+      color: var(--tg-theme-text-color); /* Используем переменные Telegram Theme */
+    }
+
+    .container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: var(--tg-theme-button-color); /* Используем переменные Telegram Theme */
+      color: var(--tg-theme-button-text-color); /* Используем переменные Telegram Theme */
+    }
+
+    #counter {
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Счетчик</h1>
+  <div class="container">
+    <button id="decrement">-</button>
+    <span id="counter">0</span>
+    <button id="increment">+</button>
+  </div>
+
+  <script>
+    // Инициализируем Telegram Web Apps API
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // Разворачиваем mini app на весь экран (по желанию)
+
+    // Получаем элементы DOM
+    const decrementButton = document.getElementById('decrement');
+    const incrementButton = document.getElementById('increment');
+    const counterElement = document.getElementById('counter');
+
+    // Инициализируем счетчик
+    let counterValue = 0;
+
+    // Функция обновления отображения счетчика
+    function updateCounter() {
+      counterElement.textContent = counterValue;
+      // Отправляем данные в Telegram (опционально)
+      tg.sendData(counterValue.toString());
+    }
+
+    // Обработчики событий для кнопок
+    decrementButton.addEventListener('click', () => {
+      counterValue--;
+      updateCounter();
+    });
+
+    incrementButton.addEventListener('click', () => {
+      counterValue++;
+      updateCounter();
+    });
+
+    // Первоначальное обновление счетчика
+    updateCounter();
+  </script>
+</body>
+</html>
