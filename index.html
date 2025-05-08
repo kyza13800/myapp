@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Простой счетчик</title>
+  <title>Навигация с iFrame</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -11,75 +11,89 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
       margin: 0;
-      background-color: var(--tg-theme-bg-color); /* Используем переменные Telegram Theme */
-      color: var(--tg-theme-text-color); /* Используем переменные Telegram Theme */
+      background-color: var(--tg-theme-bg-color);
+      color: var(--tg-theme-text-color);
+      height: 100vh;
     }
 
-    .container {
+    nav {
       display: flex;
-      align-items: center;
-      gap: 20px;
+      justify-content: space-around;
+      width: 100%;
+      background-color: var(--tg-theme-secondary-bg-color); /* Другой цвет для навигации */
+      padding: 10px 0;
     }
 
     button {
-      padding: 10px 20px;
-      font-size: 16px;
+      padding: 8px 16px;
+      font-size: 14px;
       cursor: pointer;
       border: none;
       border-radius: 5px;
-      background-color: var(--tg-theme-button-color); /* Используем переменные Telegram Theme */
-      color: var(--tg-theme-button-text-color); /* Используем переменные Telegram Theme */
+      background-color: var(--tg-theme-button-color);
+      color: var(--tg-theme-button-text-color);
     }
 
-    #counter {
-      font-size: 24px;
+    iframe {
+      width: 100%;
+      height: 80%; /* Чтобы iframe занимал большую часть экрана */
+      border: none;
     }
   </style>
 </head>
 <body>
-  <h1>Счетчик</h1>
-  <div class="container">
-    <button id="decrement">-</button>
-    <span id="counter">0</span>
-    <button id="increment">+</button>
-  </div>
+
+  <nav>
+    <button id="googleButton">Google</button>
+    <button id="mapsButton">Карты</button>
+    <button id="homeButton">Главная</button>
+  </nav>
+
+  <iframe id="mainFrame" src="" frameborder="0"></iframe>
 
   <script>
-    // Инициализируем Telegram Web Apps API
     const tg = window.Telegram.WebApp;
-    tg.expand(); // Разворачиваем mini app на весь экран (по желанию)
+    tg.expand(); // Развернуть mini app на весь экран
 
-    // Получаем элементы DOM
-    const decrementButton = document.getElementById('decrement');
-    const incrementButton = document.getElementById('increment');
-    const counterElement = document.getElementById('counter');
+    const googleButton = document.getElementById('googleButton');
+    const mapsButton = document.getElementById('mapsButton');
+    const homeButton = document.getElementById('homeButton');
+    const mainFrame = document.getElementById('mainFrame');
 
-    // Инициализируем счетчик
-    let counterValue = 0;
+    googleButton.addEventListener('click', () => {
+      mainFrame.src = 'https://www.google.com/';
+    });
 
-    // Функция обновления отображения счетчика
-    function updateCounter() {
-      counterElement.textContent = counterValue;
-      // Отправляем данные в Telegram (опционально)
-      tg.sendData(counterValue.toString());
+    mapsButton.addEventListener('click', () => {
+      mainFrame.src = 'https://www.google.com/maps';
+    });
+
+    homeButton.addEventListener('click', () => {
+      mainFrame.src = 'about:blank'; // Очистить iframe, показать пустую страницу
+    });
+
+    // Функция для применения темы Telegram к iframe (если необходимо).
+    // Это более сложный подход, обычно не требуется для простых iFrame.
+    /*
+    function applyThemeToIframe() {
+      const iframe = document.getElementById('mainFrame');
+      if (iframe && iframe.contentWindow) {
+        try { // Попытка применить стили к iframe
+          const doc = iframe.contentWindow.document;
+          doc.body.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--tg-theme-bg-color');
+          doc.body.style.color = getComputedStyle(document.body).getPropertyValue('--tg-theme-text-color');
+          // Дополнительные стили по необходимости...
+        } catch (error) {
+          console.error("Ошибка применения темы к iframe:", error);
+        }
+      }
     }
+    */
 
-    // Обработчики событий для кнопок
-    decrementButton.addEventListener('click', () => {
-      counterValue--;
-      updateCounter();
-    });
-
-    incrementButton.addEventListener('click', () => {
-      counterValue++;
-      updateCounter();
-    });
-
-    // Первоначальное обновление счетчика
-    updateCounter();
+    //applyThemeToIframe();  // Вызвать при загрузке страницы и при изменении темы.
+    //tg.onEvent('themeChanged', applyThemeToIframe); // Подписаться на событие изменения темы.
   </script>
+
 </body>
 </html>
